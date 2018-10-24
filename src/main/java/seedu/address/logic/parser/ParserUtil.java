@@ -13,11 +13,13 @@ import seedu.address.model.distributor.DistributorName;
 import seedu.address.model.distributor.DistributorPhone;
 import seedu.address.model.login.Password;
 import seedu.address.model.login.Username;
-import seedu.address.model.person.Address;
-import seedu.address.model.person.Email;
-import seedu.address.model.person.Name;
-import seedu.address.model.person.Phone;
+import seedu.address.model.product.Address;
+import seedu.address.model.product.Email;
+import seedu.address.model.product.Name;
+import seedu.address.model.product.SerialNumber;
 import seedu.address.model.tag.Tag;
+import seedu.address.model.timeidentifiedclass.shopday.Reminder;
+import seedu.address.model.timeidentifiedclass.transaction.Transaction;
 
 /**
  * Contains utility methods used for parsing strings in the various *Parser classes.
@@ -55,6 +57,22 @@ public class ParserUtil {
     }
 
     /**
+     * Returns the time entered by the user for a given reminder.
+     * @param reminderTime
+     * @return trimmed reminder time (removing trailing whitespaces).
+     * @throws ParseException if {@code String}reminder time is in the wrong format.
+     */
+
+    public static String parseReminderTime(String reminderTime) throws ParseException {
+        requireNonNull(reminderTime);
+        String trimmedTime = reminderTime.trim();
+        if (!Transaction.isValidTransactionTime(reminderTime)) {
+            throw new ParseException(Reminder.REMINDER_TIME_CONSTRAINTS);
+        }
+        return trimmedTime;
+    }
+
+    /**
      * Parses a {@code String name} into a {@code DistributorName}.
      * Leading and trailing whitespaces will be trimmed.
      *
@@ -70,18 +88,18 @@ public class ParserUtil {
     }
 
     /**
-     * Parses a {@code String phone} into a {@code Phone}.
+     * Parses a {@code String phone} into a {@code SerialNumber}.
      * Leading and trailing whitespaces will be trimmed.
      *
      * @throws ParseException if the given {@code phone} is invalid.
      */
-    public static Phone parsePhone(String phone) throws ParseException {
+    public static SerialNumber parsePhone(String phone) throws ParseException {
         requireNonNull(phone);
         String trimmedPhone = phone.trim();
-        if (!Phone.isValidPhone(trimmedPhone)) {
-            throw new ParseException(Phone.MESSAGE_PHONE_CONSTRAINTS);
+        if (!SerialNumber.isValidPhone(trimmedPhone)) {
+            throw new ParseException(SerialNumber.MESSAGE_PHONE_CONSTRAINTS);
         }
-        return new Phone(trimmedPhone);
+        return new SerialNumber(trimmedPhone);
     }
 
     /**

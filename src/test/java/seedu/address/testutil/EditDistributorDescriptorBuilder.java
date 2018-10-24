@@ -1,6 +1,6 @@
 package seedu.address.testutil;
 
-import seedu.address.logic.commands.EditDCommand.EditDistributorDescriptor;
+import seedu.address.logic.commands.EditDistributorCommand.EditDistributorDescriptor;
 import seedu.address.model.distributor.Distributor;
 import seedu.address.model.distributor.DistributorName;
 import seedu.address.model.distributor.DistributorPhone;
@@ -38,7 +38,7 @@ public class EditDistributorDescriptorBuilder {
     }
 
     /**
-     * Sets the {@code Phone} of the {@code EditDistributorDescriptor} that we are building.
+     * Sets the {@code SerialNumber} of the {@code EditDistributorDescriptor} that we are building.
      */
     public EditDistributorDescriptorBuilder withPhone(String phone) {
         descriptor.setDistPhone(new DistributorPhone(phone));

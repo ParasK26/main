@@ -29,7 +29,7 @@ Inventarie Pro is for self employed business owners who *prefer to use a desktop
 .  Once prompted, enter your username and password. This will be your permanent username and password for subsequent uses.
 
 +
-image::UiNew.png[width="790"]
+image::Ui.png[width="790"]
 
 == Features
 
@@ -62,23 +62,62 @@ Displays the product and basic information related to it
 The search is case insensitive e.g ‘potato’ will match ‘POTATO’
 All products containing the name searched for will appear.
 
-=== Add a product: `add product name`
+=== Add a transaction: `transaction`
 
-Format: `add product name <product name>`
+Format: `Transaction pr/<product name> pr/<product name> ... pr/<product name`
+
+Adds a transaction to the record for the given day.
+The time of the transaction, names of the products, and
+individual product quantities will be stored.
+
+=== View the latest transaction: `latest`
+
+Format: `latest`
+
+Displays the details of the latest transaction.
+
+=== Add a reminder: `setreminder`
+
+Format: `addreminder time/yyyy/MM/dd HH:mm:ss message/<The reminder message>`
+
+Sets and stores a reminder. In v1.2, this is only allowed for the current day.
+In future releases, reminders will be set in the current and future days.
+
+=== View due reminder notifcations: `duereminders`
+
+Format: `duereminders`
+
+Shows all reminders that are still due in the current day.
+
+=== Add a product: `add`
+
+Format: `add n/<product name> s/<serial no.> d/<distributor> i/<info.> t/<tags>`
 
 Adds a product to the list of products offered by the store
 
-=== Add a distributor: `addD name`
+=== Add a distributor: `addDistributor`
 
-Format: `addD dn/<distributor name> dp/<distributor phone>`
+Format: `addDistributor dn/<distributor name> dp/<distributor serialNumber>`
 
 Adds a distributor to the list of distributors engaged with the store.
 
-=== Edit a distributor: `editD index`
+=== Edit a distributor: `editDistributor index`
 
-Format: `addD index dn/<distributor name> dp/<distributor phone>`
+Format: `editDistributor index dn/<distributor name> dp/<distributor serialNumber>`
 
-Edits details of a distributor from the list of distributors engaged with the store.
+Edits details of the indexed distributor from the list of distributors engaged with the store.
+
+=== Find a distributor: `findDistributor`
+
+Format: `findDistributor <some relevant field>`
+
+Finds distributors that are related to the <some relevant field> entered.
+
+=== Delete a distributor: `deleteDistributor`
+
+Format: `deleteDistributor index`
+
+Deletes the indexed distributor from the list of distributors engaged with the store.
 
 === Find all stored contact information (distributors and customers): `contacts`
 
@@ -116,21 +155,28 @@ _{explain how the user can enable/disable data encryption}_
 // tag::authentication[]
 === User Authentication
 
-==== Create new user : `create`
+==== Register new user : `register`
 
 Creates a new user account in the application. +
-Format: `create u/USERNAME p/PASSWORD`
-e.g. `create u/John p/pass`
+Format: `register u/USERNAME p/PASSWORD` +
+e.g. `register u/John p/pass`
 
 ==== Login : `login`
 
 Logs the user into the application. +
-Format: `login u/USERNAME p/PASSWORD`
+Format: `login u/USERNAME p/PASSWORD` +
+e.g. `login u/John p/pass`
 
 ==== Logout: `logout`
 
 Logs the user out of the application. +
 Format: `logout`
+
+==== Deregister: `deregister`
+
+Deregister the user account in the application. +
+Format: `deregister u/USERNAME p/PASSWORD` +
+e.g. `deregister u/John p/pass`
 
 // end::authentication[]
 
@@ -151,10 +197,16 @@ A: There are numerous advantages to digitization of records. Do google ‘advant
 
 == Command Summary
 
-* *Add Product* `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]...` +
+* *Add Product* : `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]...` +
 e.g. `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague`
-*  *Add Distributor* `addD dn/DIST_NAME dp/DIST_PHONE` +
+*  *Add Distributor* : `addD dn/DIST_NAME dp/DIST_PHONE` +
 e.g. `addD dn/Ah Huat Distributors dp/61234567`
+* *Add a Transaction* : `Transaction pr/<product name> pr/<product name> ... pr/<product name` +
+e.g. `transaction pr/Apple pr/Banana pr/Cherry pr/Banana`
+* *View the latest transaction: `latest`
+* *Set a Reminder* : `addreminder time/yyyy/MM/dd HH:mm:ss message/<The reminder message>` +
+e.g `addreminder time/2018/08/16 08:30:00 message/Remove expired milk from aisle 6.`
+* *View due Reminders* : `duereminders`
 * *Clear* : `clear`
 * *Delete* : `delete INDEX` +
 e.g. `delete 3`

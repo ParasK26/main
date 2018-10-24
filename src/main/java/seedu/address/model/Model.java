@@ -1,5 +1,6 @@
 package seedu.address.model;
 
+import java.util.ArrayList;
 import java.util.function.Predicate;
 
 import javafx.collections.ObservableList;
@@ -9,9 +10,15 @@ import seedu.address.model.login.UniqueUsersList;
 import seedu.address.model.login.User;
 import seedu.address.model.login.Username;
 import seedu.address.model.login.exceptions.AuthenticatedException;
+import seedu.address.model.login.exceptions.AuthenticationFailedException;
 import seedu.address.model.login.exceptions.DuplicateUserException;
 import seedu.address.model.login.exceptions.UserNotFoundException;
-import seedu.address.model.person.Product;
+import seedu.address.model.product.Product;
+import seedu.address.model.timeidentifiedclass.exceptions.InvalidTimeFormatException;
+import seedu.address.model.timeidentifiedclass.shopday.Reminder;
+import seedu.address.model.timeidentifiedclass.shopday.exceptions.ClosedShopDayException;
+import seedu.address.model.timeidentifiedclass.shopday.exceptions.DuplicateReminderException;
+import seedu.address.model.timeidentifiedclass.shopday.exceptions.DuplicateTransactionException;
 import seedu.address.model.timeidentifiedclass.transaction.Transaction;
 
 /**
@@ -78,7 +85,7 @@ public interface Model {
     void updateDistributor(Distributor target, Distributor editedDistributor);
 
 
-    /** Returns an unmodifiable view of the filtered person list
+    /** Returns an unmodifiable view of the filtered product list
      * The product identity of {@code editedProduct} must not be the same as another existing
      * product in the address book.
      */
@@ -87,7 +94,7 @@ public interface Model {
     /** Returns an unmodifiable view of the filtered product list */
     ObservableList<Product> getFilteredPersonList();
 
-    /** Returns an unmodifiable view of the filtered person list */
+    /** Returns an unmodifiable view of the filtered product list */
     ObservableList<Distributor> getFilteredDistributorList();
 
     /**
@@ -125,13 +132,40 @@ public interface Model {
     void commitAddressBook();
 
     /**
-     * Adds a transaction to the sales history
+     * Adds a transaction to the active shop day.
+     * @param transaction
+     * @throws InvalidTimeFormatException
+     * @throws DuplicateTransactionException
+     * @throws ClosedShopDayException
      */
-    void addTransaction(Transaction transaction);
+    void addTransaction(Transaction transaction) throws InvalidTimeFormatException,
+            DuplicateTransactionException, ClosedShopDayException;
+
+    /**
+     * Adds a reminder to the active shop day.
+     * @param reminder
+     * @throws InvalidTimeFormatException
+     * @throws DuplicateReminderException
+     */
+
+    void addReminder(Reminder reminder) throws InvalidTimeFormatException, DuplicateReminderException;
+
+    /**
+     * Returns the reminders due on the current active day.
+     */
+
+    ArrayList<Reminder> getDueRemindersInActiveBusinessDay();
+
+    /**
+     * Returns the reminders that have not been shown by the thread.
+     */
+
+    ArrayList<Reminder> getDueRemindersInActiveBusinessDayForThread();
 
     /**
      * Returns a given day's transaction history
      */
+
     String getDaysHistory(String day);
 
     /**
@@ -164,9 +198,9 @@ public interface Model {
      */
     void addUser(User person) throws DuplicateUserException;
 
-    boolean checkLoginCredentials(Username username, Password password) throws AuthenticatedException;
+    boolean checkAuthentication(Username username, Password password) throws AuthenticatedException;
 
-    boolean checkCredentials(Username username, Password password) throws AuthenticatedException;
+    boolean checkCredentials(Username username, Password password) throws AuthenticationFailedException;
 
     boolean hasLoggedIn();
 
@@ -178,4 +212,5 @@ public interface Model {
 
     /** Returns the AddressBook */
     ReadOnlyAddressBook getAddressBook();
+
 }

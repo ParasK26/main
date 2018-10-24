@@ -8,18 +8,19 @@ import seedu.address.commons.core.LogsCenter;
 import seedu.address.logic.commands.ChangeUserPasswordCommand;
 import seedu.address.logic.commands.Command;
 import seedu.address.logic.commands.CommandResult;
-import seedu.address.logic.commands.CreateUserCommand;
 import seedu.address.logic.commands.DeleteUserCommand;
 import seedu.address.logic.commands.ExitCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.LoginCommand;
+import seedu.address.logic.commands.RegisterUserCommand;
+import seedu.address.logic.commands.ThreadDueRemindersCommand;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.parser.AddressBookParser;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.Model;
 import seedu.address.model.distributor.Distributor;
 import seedu.address.model.login.User;
-import seedu.address.model.person.Product;
+import seedu.address.model.product.Product;
 
 /**
  * The main LogicManager of the app.
@@ -39,17 +40,22 @@ public class LogicManager extends ComponentManager implements Logic {
 
     @Override
     public CommandResult execute(String commandText) throws CommandException, ParseException {
-        logger.info("----------------[USER COMMAND][" + commandText + "]");
         try {
             Command command = addressBookParser.parseCommand(commandText);
-            CommandResult result;
+            CommandResult result = null;
+            boolean isThreadCommand = commandText.equals(ThreadDueRemindersCommand.COMMAND_WORD);
+
             if (model.hasLoggedIn()) {
+                if (!isThreadCommand) {
+                    logger.info("----------------[USER COMMAND][" + commandText + "]");
+                }
                 result = command.execute(model, history);
-            } else {
+            } else if (!isThreadCommand) {
                 logger.info("User attempts to use a command without logging in first.");
                 result = executeUnauthenticatedCommands(commandText, command);
                 history.clear();
             }
+
             return result;
         } finally {
             history.add(commandText);
@@ -78,7 +84,7 @@ public class LogicManager extends ComponentManager implements Logic {
             if (commandText.split(" ")[0].equals(LoginCommand.COMMAND_WORD)
                     || commandText.split(" ")[0].equals(HelpCommand.COMMAND_WORD)
                     || commandText.split(" ")[0].equals(ExitCommand.COMMAND_WORD)
-                    || commandText.split(" ")[0].equals(CreateUserCommand.COMMAND_WORD)
+                    || commandText.split(" ")[0].equals(RegisterUserCommand.COMMAND_WORD)
                     || commandText.split(" ")[0].equals(DeleteUserCommand.COMMAND_WORD)
                     || commandText.split(" ")[0].equals(ChangeUserPasswordCommand.COMMAND_WORD)) {
                 result = command.execute(model, history);

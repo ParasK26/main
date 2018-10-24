@@ -14,7 +14,7 @@ import seedu.address.model.login.User;
 /**
  * An Immutable User Database that is serializable to XML format
  */
-@XmlRootElement(name = "users")
+@XmlRootElement(name = "userdatabase")
 public class XmlSerializableUserDatabase {
 
     public static final String MESSAGE_DUPLICATE_USER = "Users list contains duplicate user(s).";
@@ -48,6 +48,7 @@ public class XmlSerializableUserDatabase {
         UserDatabase userDatabase = new UserDatabase();
         for (XmlAdaptedUser u : users) {
             User user = u.toModelType();
+
             if (userDatabase.hasUser(user)) {
                 throw new IllegalValueException(MESSAGE_DUPLICATE_USER);
             }

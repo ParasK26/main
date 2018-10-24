@@ -21,7 +21,9 @@ public class XmlAdaptedUser {
     @XmlElement(required = true)
     private String password;
     @XmlElement(required = true)
-    private String addressbookfilepath;
+    private String addressBookFilePath;
+    @XmlElement(required = true)
+    private String salesHistoryFilePath;
 
     /**
      * Constructs an XmlAdaptedUser.
@@ -30,12 +32,13 @@ public class XmlAdaptedUser {
     public XmlAdaptedUser() {}
 
     /**
-     * Constructs an {@code XmlAdaptedUser} with the given person details.
+     * Constructs an {@code XmlAdaptedUser} with the given product details.
      */
-    public XmlAdaptedUser(String username, String password, String addressbookfilepath) {
+    public XmlAdaptedUser(String username, String password, String addressBookFilePath, String salesHistoryFilePath) {
         this.username = username;
         this.password = password;
-        this.addressbookfilepath = addressbookfilepath;
+        this.addressBookFilePath = addressBookFilePath;
+        this.salesHistoryFilePath = salesHistoryFilePath;
     }
 
     /**
@@ -46,13 +49,14 @@ public class XmlAdaptedUser {
     public XmlAdaptedUser(User source) {
         username = source.getUsername().fullUsername;
         password = source.getPassword().fullPassword;
-        addressbookfilepath = source.getAddressBookFilePath().toString();
+        addressBookFilePath = source.getAddressBookFilePath().toString();
+        salesHistoryFilePath = source.getSalesHistoryFilePath().toString();
     }
 
     /**
-     * Converts this jaxb-friendly adapted person object into the model's User object.
+     * Converts this jaxb-friendly adapted product object into the model's User object.
      *
-     * @throws IllegalValueException if there were any data constraints violated in the adapted person
+     * @throws IllegalValueException if there were any data constraints violated in the adapted product
      */
     public User toModelType() throws IllegalValueException {
         if (username == null) {
@@ -73,16 +77,25 @@ public class XmlAdaptedUser {
         }
         final Password modelPassword = new Password(password);
 
-        if (addressbookfilepath == null) {
+        if (addressBookFilePath == null) {
             throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, "AddressBook file path"));
         }
-        if (!User.isValidAddressBookFilePath(Paths.get(addressbookfilepath), username)) {
-            throw new IllegalValueException(User.MESSAGE_AB_FILEPATH_CONSTRAINTS);
+
+        if (!User.isValidAddressBookFilePath(Paths.get(addressBookFilePath), this.username)) {
+            throw new IllegalValueException(String.format(User.MESSAGE_AB_FILEPATH_CONSTRAINTS, "AddressBook"));
+        }
+        final Path modelAddressBookFilePath = Paths.get(addressBookFilePath);
+
+        if (salesHistoryFilePath == null) {
+            throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, "SalesHistory file path"));
         }
 
-        final Path modelAddressBookFilePath = Paths.get(addressbookfilepath);
+        if (!User.isValidSalesHistoryFilePath(Paths.get(salesHistoryFilePath), this.username)) {
+            throw new IllegalValueException(String.format(User.MESSAGE_AB_FILEPATH_CONSTRAINTS, "SalesHistory"));
+        }
+        final Path modelSalesHistoryFilePath = Paths.get(salesHistoryFilePath);
 
-        return new User(modelUsername, modelPassword, modelAddressBookFilePath);
+        return new User(modelUsername, modelPassword, modelAddressBookFilePath, modelSalesHistoryFilePath);
     }
 
     @Override
@@ -98,7 +111,7 @@ public class XmlAdaptedUser {
         XmlAdaptedUser otherUser = (XmlAdaptedUser) other;
         return Objects.equals(username, otherUser.username)
                 && Objects.equals(password, otherUser.password)
-                && Objects.equals(addressbookfilepath, otherUser.addressbookfilepath);
+                && Objects.equals(addressBookFilePath, otherUser.addressBookFilePath);
 
     }
 }
